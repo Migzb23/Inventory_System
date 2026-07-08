@@ -1,0 +1,94 @@
+@model IEnumerable<Inventory_System.Models.InventoryItem>
+
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-list"></i> Inventory Items</h1>
+    <a href="~/Inventory/Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add New Item</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchTerm" />
+            </div>
+            <div class="col-md-3">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    @foreach (var cat in ViewBag.Categories ?? new List<string>())
+                    {
+                        <option value="@cat" selected="@(ViewBag.CurrentCategory == cat)">@cat</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="sortBy" class="form-select">
+                    <option value="name" selected="@(ViewBag.CurrentSort == "name")">Sort by Name</option>
+                    <option value="quantity" selected="@(ViewBag.CurrentSort == "quantity")">Sort by Quantity</option>
+                    <option value="price" selected="@(ViewBag.CurrentSort == "price")">Sort by Price</option>
+                    <option value="value" selected="@(ViewBag.CurrentSort == "value")">Sort by Total Value</option>
+                    <option value="lowstock" selected="@(ViewBag.CurrentSort == "lowstock")">Low Stock Items</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+        <p class="mt-3">No items found. <a href="~/Inventory/Create">Add your first item</a></p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Value</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.Name</strong></td>
+                        <td>@item.Category</td>
+                        <td>@item.Quantity</td>
+                        <td>$@item.UnitPrice.ToString("F2")</td>
+                        <td><strong>$@item.TotalValue.ToString("F2")</strong></td>
+                        <td>
+                            @if (item.IsLowStock)
+                            {
+                                <span class="badge low-stock-badge"><i class="bi bi-exclamation-triangle"></i> Low Stock</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> In Stock</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="~/Inventory/Details/@item.Id" class="btn btn-sm btn-info"><i class="bi bi-eye"></i> View</a>
+                            <a href="~/Inventory/Edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Edit</a>
+                            <a href="~/Inventory/Delete/@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

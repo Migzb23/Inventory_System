@@ -1,0 +1,171 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Inventory Report";
+}
+
+<h1 class="mb-4"><i class="bi bi-graph-up"></i> Inventory Report</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Items</h5>
+                <h3 class="text-primary">@Model.TotalItems</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Quantity</h5>
+                <h3 class="text-info">@Model.TotalQuantity</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Value</h5>
+                <h3 class="text-success">$@Model.TotalValue.ToString("F2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Low Stock Items</h5>
+                <h3 class="text-danger">@Model.LowStockItems.Count</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Low Stock Items</h5>
+            </div>
+            <div class="card-body">
+                @if (!Model.LowStockItems.Any())
+                {
+                    <p class="text-muted">No low stock items. Everything is well stocked!</p>
+                }
+                else
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Threshold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.LowStockItems)
+                            {
+                                <tr class="table-warning">
+                                    <td><a href="~/Inventory/Edit/@item.Id">@item.Name</a></td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.LowStockThreshold</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Inventory by Category</h5>
+            </div>
+            <div class="card-body">
+                @if (!Model.ByCategory.Any())
+                {
+                    <p class="text-muted">No categories yet.</p>
+                }
+                else
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Items</th>
+                                <th>Total Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cat in Model.ByCategory)
+                            {
+                                <tr>
+                                    <td><strong>@cat.Category</strong></td>
+                                    <td>@cat.Count</td>
+                                    <td>$@cat.Value.ToString("F2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0"><i class="bi bi-list"></i> All Items</h5>
+    </div>
+    <div class="card-body">
+        @if (!Model.AllItems.Any())
+        {
+            <p class="text-muted">No items in inventory.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Total Value</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.AllItems)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Category</td>
+                                <td>@item.Quantity</td>
+                                <td>$@item.UnitPrice.ToString("F2")</td>
+                                <td><strong>$@item.TotalValue.ToString("F2")</strong></td>
+                                <td>
+                                    @if (item.IsLowStock)
+                                    {
+                                        <span class="badge bg-danger">Low Stock</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">In Stock</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <a href="~/" class="btn btn-primary"><i class="bi bi-house"></i> Back to Dashboard</a>
+</div>

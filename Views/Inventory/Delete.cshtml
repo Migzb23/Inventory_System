@@ -1,0 +1,50 @@
+@model Inventory_System.Models.InventoryItem
+
+@{
+    ViewData["Title"] = "Delete Item";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4 text-danger"><i class="bi bi-trash"></i> Delete Inventory Item</h1>
+
+        <div class="card border-danger">
+            <div class="card-body">
+                <h5 class="card-title">Are you sure you want to delete this item?</h5>
+                
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
+                </div>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Name</th>
+                        <td>@Model.Name</td>
+                    </tr>
+                    <tr>
+                        <th>Category</th>
+                        <td>@Model.Category</td>
+                    </tr>
+                    <tr>
+                        <th>Quantity</th>
+                        <td>@Model.Quantity</td>
+                    </tr>
+                    <tr>
+                        <th>Unit Price</th>
+                        <td>$@Model.UnitPrice.ToString("F2")</td>
+                    </tr>
+                    <tr>
+                        <th>Total Value</th>
+                        <td><strong>$@Model.TotalValue.ToString("F2")</strong></td>
+                    </tr>
+                </table>
+
+                <form asp-action="DeleteConfirmed" method="post" class="d-inline">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Delete Permanently</button>
+                </form>
+                <a href="~/Inventory/Index" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
